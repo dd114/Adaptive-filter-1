@@ -23,14 +23,17 @@ def processing_of_signal(input, weights):
     return output
 
 def getting_weights_1d(first_input_1d, second_input_1d, number_of_weights_1d, mu_0, epsilon):
+
     # weights = np.random.random(number_of_weights_1d)
     weights_1d = np.ones(number_of_weights_1d)
 
     # print(len(second_input_1d[number_of_weights_1d - 1:]))
 
-    for k in range(len(second_input_1d[number_of_weights_1d - 1:])):
+    for k in range(len(second_input_1d[number_of_weights_1d - 1:]) - 1): # -1 bc at last iteration len(first_input_k) can be lower than number_of_weights_1d => array out of bound
         first_input_k = first_input_1d[k:number_of_weights_1d + k]
         second_input_k = second_input_1d[k + number_of_weights_1d - 1]
+
+        # print(len(first_input_k), number_of_weights_1d)
 
         p = second_input_k * first_input_k
 
@@ -44,6 +47,7 @@ def getting_weights_1d(first_input_1d, second_input_1d, number_of_weights_1d, mu
         # mu_k = 0.9 / np.trace(r)
 
         grad_J = -2 * (p - r.dot(weights_1d))
+        # print(grad_J)
 
         # if grad_J == 0:
         #     print("r.dot(weights_1d) = ", r.max())
@@ -53,7 +57,7 @@ def getting_weights_1d(first_input_1d, second_input_1d, number_of_weights_1d, mu
     return weights_1d
 
 
-def fitting_of_weights(first_input, second_input, number_of_weights, mu_0=1, epsilon=0.1):
+def fitting_of_weights(first_input, second_input, number_of_weights, mu_0=1, epsilon=1):
     assert len(first_input.shape) == len(
         second_input.shape), f'The dimensions of the parameters do not match {len(first_input.shape)} != {len(second_input.shape)}'
 
