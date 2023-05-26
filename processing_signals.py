@@ -44,6 +44,7 @@ def getting_weights_1d(first_input_1d, second_input_1d, number_of_weights_1d, mu
                 r[i, j] = first_input_k[i] * first_input_k[j]
 
         mu_k = mu_0 / ((first_input_k ** 2).sum() + epsilon)
+        # mu_k = 0.9 / (3 * np.trace(r))
         # mu_k = 0.9 / np.trace(r)
 
         grad_J = -2 * (p - r.dot(weights_1d))
