@@ -3,22 +3,19 @@ import numpy as np
 def processing_of_signal(input, weights):
     assert len(input.shape) == len(weights.shape), f'The dimensions of the parameters do not match {len(input.shape)} != {len(weights.shape)}'
 
-    output = np.zeros_like(input)
+    # output = np.zeros_like(input)
+    output = np.empty(input.shape)
     number_of_weights = weights.shape[0] # bc number of weights to each time layer is located on column (in 2-dim case)
 
-    print(weights.shape, input.shape)
+    print(input.shape, weights.shape)
 
     match len(input.shape):
         case 1: # signal depends on time
-            for i in range(output.size - number_of_weights + 1):
-                output[number_of_weights - 1 + i] = (input[i:number_of_weights + i] * weights).sum()
-
+            output = np.convolve(input, weights, mode='same')
         case 2: # signal depends on time and x
 
             for j in range(input.shape[0]):
-                for i in range(output.shape[1] - number_of_weights + 1):
-                    output[j, number_of_weights - 1 + i] = (input[j, i:number_of_weights + i] * weights[:, j]).sum()
-                    # print(i, j)
+                output[j, :] = np.convolve(input[j, :], weights[:, j], mode='same')
 
     return output
 
