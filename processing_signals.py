@@ -55,6 +55,35 @@ def getting_weights_1d(first_input_1d, second_input_1d, number_of_weights_1d, mu
 
     return weights_1d
 
+def RLS(first_input_1d, second_input_1d, number_of_weights_1d, lambd=0.9):
+    delta = 1
+
+    h_k = np.zeros(number_of_weights_1d).reshape(number_of_weights_1d, 1)
+    first_input_k = np.zeros(number_of_weights_1d)
+    iR_k = np.eye(number_of_weights_1d) * (1 / delta)
+    R_k = np.eye(number_of_weights_1d) * (delta)
+
+    # print(len(second_input_1d[number_of_weights_1d - 1:]))
+
+    for k in range(1, len(second_input_1d)):
+        first_input_k = np.roll(first_input_k, -1)
+        first_input_k[-1] = first_input_1d[k]
+
+        first_input_k_vec = first_input_k.reshape(number_of_weights_1d, 1)
+        first_input_k_vec_transp = first_input_k_vec.transpose()
+
+        g_k = iR_k.dot(first_input_k_vec) / (lambd + first_input_k_vec_transp.dot(iR_k).dot(first_input_k_vec))
+        alpha_k = second_input_1d[k] - h_k.transpose().dot(first_input_k_vec)
+
+        h_k = h_k + g_k * alpha_k
+        iR_k = (iR_k - g_k.dot(first_input_k_vec_transp).dot(iR_k)) / lambd
+        R_k = lambd * R_k + first_input_k_vec.dot(first_input_k_vec_transp)
+        # iR_k = np.linalg.inv(R_k)
+        print(k)
+        # print(np.sum(np.linalg.inv(R_k) - iR_k))
+
+    return h_k
+
 
 def fitting_of_weights(first_input, second_input, number_of_weights, mu_0=0.9, epsilon=1):
     assert len(first_input.shape) == len(
