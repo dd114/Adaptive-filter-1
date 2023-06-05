@@ -2,8 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import processing_signals as ps
 
-def l2(firstSeries, secondSeries):
-    return np.sqrt(((firstSeries - secondSeries) ** 2).sum())
 
 model = np.load("MODEL.NPY")
 model_agc = np.load("MODEL_AGC.NPY")
@@ -29,8 +27,8 @@ print(model.shape, model_agc.shape, gather.shape)
 
 plt.show()
 
-print(f"l2 = {l2(model_agc, gather[0]):.1e}")
-print(f"l2 = {l2(model_agc, model[0]):.1e}")
+print(f"NMSE = {ps.NMSE(model_agc, gather[0]):.1e}")
+print(f"NMSE = {ps.NMSE(model_agc, model[0]):.1e}")
 
 # weights_2d = ps.fitting_of_weights(model_agc[0], model[0], 2, 0.9)
 weights_2d = ps.fitting_of_weights(model_agc[0], gather[0], 1, 0.9)
@@ -38,8 +36,8 @@ print(weights_2d, weights_2d.shape)
 
 approx_model = ps.processing_of_signal(model_agc[0], weights_2d)
 
-print(f"l2 = {l2(approx_model, gather[0]):.1e}")
-print(f"l2 = {l2(approx_model, model[0]):.1e}")
+print(f"NMSE = {ps.NMSE(approx_model, gather[0]):.1e}")
+print(f"NMSE = {ps.NMSE(approx_model, model[0]):.1e}")
 
 
 # plt.plot(model_agc[0] * 1e+4)
@@ -47,13 +45,16 @@ print(f"l2 = {l2(approx_model, model[0]):.1e}")
 
 plt.figure(figsize=(15, 6))
 
+max_value1 = max(np.abs(gather[0]).max(), np.abs(approx_model).max())
+max_value2 = max(np.abs(model[0]).max(), np.abs(approx_model).max())
+
 plt.subplot(1, 2, 1)
-plt.plot(gather[0])
-plt.plot(approx_model)
+plt.plot(gather[0] / max_value1)
+plt.plot(approx_model / max_value1)
 
 plt.subplot(1, 2, 2)
-plt.plot(model[0])
-plt.plot(approx_model)
+plt.plot(model[0] / max_value2)
+plt.plot(approx_model / max_value2)
 
 
 plt.show()

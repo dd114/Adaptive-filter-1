@@ -79,7 +79,7 @@ def RLS(first_input_1d, second_input_1d, number_of_weights_1d, lambd=0.9):
         iR_k = (iR_k - g_k.dot(first_input_k_vec_transp).dot(iR_k)) / lambd
         R_k = lambd * R_k + first_input_k_vec.dot(first_input_k_vec_transp)
         # iR_k = np.linalg.inv(R_k)
-        print(k)
+        # print(k)
         # print(np.sum(np.linalg.inv(R_k) - iR_k))
 
     return h_k
@@ -111,3 +111,19 @@ def fitting_of_weights(first_input, second_input, number_of_weights, mu_0=0.9, e
                 # print("2", weights.shape)
 
     return weights
+
+def l2(firstSeries, secondSeries):
+    return np.sqrt(((firstSeries - secondSeries) ** 2).sum())
+
+def Nl2(firstSeries, secondSeries):
+    max_value = max(np.abs(firstSeries).max(), np.abs(secondSeries).max())
+    # print(f"max_value = {max_value}")
+    return np.sqrt((((firstSeries - secondSeries) / max_value) ** 2).sum())
+
+def MSE(firstSeries, secondSeries):
+    return np.mean(((firstSeries - secondSeries) ** 2), dtype=np.float32)
+
+def NMSE(firstSeries, secondSeries):
+    max_value = max(np.abs(firstSeries).max(), np.abs(secondSeries).max())
+    # print(f"max_value = {max_value}")
+    return np.mean((((firstSeries - secondSeries) / max_value) ** 2), dtype=np.float32)
