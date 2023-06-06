@@ -51,39 +51,39 @@ plt.show()
 
 ############################
 
-plt.figure(figsize=(15, 6))
-plt.subplot(1, 2, 1)
-plt.plot(t, first_input_1d)
-plt.title("first_input_1d")
-# plt.show()
-
-freq_bound = 2100
-
-x = fftpack.rfftfreq(first_input_1d.size, right_bound / number_of_point)
-y = 2 * np.abs(fftpack.rfft(first_input_1d)) / first_input_1d.size
-
-plt.subplot(1, 2, 2)
-plt.plot(x[:freq_bound], y[:freq_bound], '.')
-plt.title("AFH of first_input")
-# plt.show()
-
-
-
-
-plt.figure(figsize=(15, 6))
-plt.subplot(1, 2, 1)
-plt.plot(t, second_input_1d)
-plt.title("second_input_1d")
-# plt.show()
-
-freq_bound = 2100
-
-x = fftpack.rfftfreq(second_input_1d.size, right_bound / number_of_point)
-y = 2 * np.abs(fftpack.rfft(second_input_1d)) / second_input_1d.size
-
-plt.subplot(1, 2, 2)
-plt.plot(x[:freq_bound], y[:freq_bound], '.')
-plt.title("AFH of second_input_1d")
-# plt.show()
+# plt.figure(figsize=(15, 6))
+# plt.subplot(1, 2, 1)
+# plt.plot(t, first_input_1d)
+# plt.title("first_input_1d")
+# # plt.show()
+#
+# freq_bound = 2100
+#
+# x = fftpack.rfftfreq(first_input_1d.size, right_bound / number_of_point)
+# y = 2 * np.abs(fftpack.rfft(first_input_1d)) / first_input_1d.size
+#
+# plt.subplot(1, 2, 2)
+# plt.plot(x[:freq_bound], y[:freq_bound], '.')
+# plt.title("AFH of first_input")
+# # plt.show()
+#
+#
+#
+#
+# plt.figure(figsize=(15, 6))
+# plt.subplot(1, 2, 1)
+# plt.plot(t, second_input_1d)
+# plt.title("second_input_1d")
+# # plt.show()
+#
+# freq_bound = 2100
+#
+# x = fftpack.rfftfreq(second_input_1d.size, right_bound / number_of_point)
+# y = 2 * np.abs(fftpack.rfft(second_input_1d)) / second_input_1d.size
+#
+# plt.subplot(1, 2, 2)
+# plt.plot(x[:freq_bound], y[:freq_bound], '.')
+# plt.title("AFH of second_input_1d")
+# # plt.show()
 
 ############################

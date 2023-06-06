@@ -9,20 +9,19 @@ def processing_of_signal(input, weights):
 
     print(input.shape, weights.shape)
 
-    match len(input.shape):
-        case 1: # signal depends on time
-            output = np.convolve(input, weights, mode='same')
-        case 2: # signal depends on time and x
-
-            for j in range(input.shape[0]):
-                output[j, :] = np.convolve(input[j, :], weights[:, j], mode='same')
+    if len(input.shape) == 1: # signal depends on time
+        output = np.convolve(input, weights, mode='same')
+    elif len(input.shape) == 2: # signal depends on time and x
+        for j in range(input.shape[0]):
+            output[j, :] = np.convolve(input[j, :], weights[:, j], mode='same')
 
     return output
 
-def getting_weights_1d(first_input_1d, second_input_1d, number_of_weights_1d, mu_0, epsilon):
+def NLMS_1d(first_input_1d, second_input_1d, number_of_weights_1d, mu_0, epsilon):
 
     # weights = np.random.random(number_of_weights_1d)
-    weights_1d = np.ones(number_of_weights_1d)
+    # weights_1d = np.ones(number_of_weights_1d)
+    weights_1d = np.zeros(number_of_weights_1d)
 
     # print(len(second_input_1d[number_of_weights_1d - 1:]))
 
@@ -89,26 +88,20 @@ def fitting_of_weights(first_input, second_input, number_of_weights, mu_0=0.9, e
     assert len(first_input.shape) == len(
         second_input.shape), f'The dimensions of the parameters do not match {len(first_input.shape)} != {len(second_input.shape)}'
 
-    weights = np.array([0])
+    weights = np.empty(first_input.shape)
 
-    match len(first_input.shape):
-        case 1:  # signal depends on time
-            weights = getting_weights_1d(first_input, second_input, number_of_weights, mu_0, epsilon)
-
-        case 2:  # signal depends on time and x
-            weights = getting_weights_1d(first_input[0, :], second_input[0, :], number_of_weights, mu_0,
+    if len(first_input.shape) == 1: # signal depends on time
+        weights = NLMS_1d(first_input, second_input, number_of_weights, mu_0, epsilon)
+    elif len(first_input.shape) == 2:  # signal depends on time and x
+        weights = NLMS_1d(first_input[0, :], second_input[0, :], number_of_weights, mu_0,
                                          epsilon).reshape(number_of_weights, 1)
 
-            for i in range(1, first_input.shape[0]):
-                weights2 = getting_weights_1d(first_input[i, :], second_input[i, :], number_of_weights, mu_0,
-                                              epsilon).reshape(number_of_weights, 1)
+        for i in range(1, first_input.shape[0]):
+            weights2 = NLMS_1d(first_input[i, :], second_input[i, :], number_of_weights, mu_0,
+                                          epsilon).reshape(number_of_weights, 1)
 
-                # print("1", weights.shape)
+            weights = np.concatenate((weights, weights2), axis=1)
 
-                # print(weights, weights2)
-                weights = np.concatenate((weights, weights2), axis=1)
-
-                # print("2", weights.shape)
 
     return weights
 
@@ -117,7 +110,7 @@ def l2(firstSeries, secondSeries):
 
 def Nl2(firstSeries, secondSeries):
     max_value = max(np.abs(firstSeries).max(), np.abs(secondSeries).max())
-    # print(f"max_value = {max_value}")
+    # print(f"max_value = {max_value:.1e}")
     return np.sqrt((((firstSeries - secondSeries) / max_value) ** 2).sum())
 
 def MSE(firstSeries, secondSeries):
@@ -125,5 +118,13 @@ def MSE(firstSeries, secondSeries):
 
 def NMSE(firstSeries, secondSeries):
     max_value = max(np.abs(firstSeries).max(), np.abs(secondSeries).max())
-    # print(f"max_value = {max_value}")
+    # print(f"max_value = {max_value:.1e}")
     return np.mean((((firstSeries - secondSeries) / max_value) ** 2), dtype=np.float32)
+
+def ME(firstSeries, secondSeries):
+    return np.mean(np.abs(firstSeries - secondSeries), dtype=np.float32)
+
+def NME(firstSeries, secondSeries):
+    max_value = max(np.abs(firstSeries).max(), np.abs(secondSeries).max())
+    # print(f"max_value = {max_value:.1e}")
+    return np.mean(np.abs(firstSeries - secondSeries), dtype=np.float32) / max_value

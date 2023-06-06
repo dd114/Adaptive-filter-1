@@ -30,8 +30,8 @@ plt.show()
 print(f"NMSE = {ps.NMSE(model_agc, gather[0]):.1e}")
 print(f"NMSE = {ps.NMSE(model_agc, model[0]):.1e}")
 
-# weights_2d = ps.fitting_of_weights(model_agc[0], model[0], 2, 0.9)
-weights_2d = ps.fitting_of_weights(model_agc[0], gather[0], 1, 0.9)
+weights_2d = ps.fitting_of_weights(model_agc[0], model[0], 2, 0.9)
+# weights_2d = ps.fitting_of_weights(model_agc[0], gather[0], 1, 0.9)
 print(weights_2d, weights_2d.shape)
 
 approx_model = ps.processing_of_signal(model_agc[0], weights_2d)

@@ -29,8 +29,8 @@ second_input_1d = ps_noise + signal_1d(1, 1, 0, t)[:-1]
 f = pa.filters.FilterRLS(n=2, mu=0.999, w="zeros")
 y, e, w = f.run(second_input_1d, x)
 
-print(w)
 approx_weights_1d = w[-1]
+print(approx_weights_1d)
 approx_signal_1d = ps.processing_of_signal(first_input_1d, approx_weights_1d.flatten())
 
 # show results
