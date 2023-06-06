@@ -19,40 +19,32 @@ def processing_of_signal(input, weights):
 
 def NLMS_1d(first_input_1d, second_input_1d, number_of_weights_1d, mu_0, epsilon):
 
-    # weights = np.random.random(number_of_weights_1d)
-    # weights_1d = np.ones(number_of_weights_1d)
-    weights_1d = np.zeros(number_of_weights_1d)
+    h_k = np.zeros(number_of_weights_1d).reshape(number_of_weights_1d, 1)
 
-    # print(len(second_input_1d[number_of_weights_1d - 1:]))
+    first_input_k = np.zeros(number_of_weights_1d)
 
-    for k in range(len(second_input_1d[number_of_weights_1d - 1:]) - 1): # -1 bc at last iteration len(first_input_k) can be lower than number_of_weights_1d => array out of bound
-        first_input_k = first_input_1d[k:number_of_weights_1d + k]
-        second_input_k = second_input_1d[k + number_of_weights_1d - 1]
+    for k in range(1, len(second_input_1d)):
+        first_input_k = np.roll(first_input_k, -1)
+        first_input_k[-1] = first_input_1d[k]
 
-        # print(len(first_input_k), number_of_weights_1d)
+        first_input_k_vec = first_input_k.reshape(number_of_weights_1d, 1)
+        first_input_k_vec_transp = first_input_k_vec.transpose()
 
-        p = second_input_k * first_input_k
+        P_k = second_input_1d[k] * first_input_k_vec
 
-        r = np.empty((number_of_weights_1d, number_of_weights_1d))
+        R_k = first_input_k_vec.dot(first_input_k_vec_transp)
 
-        for i in range(number_of_weights_1d):
-            for j in range(number_of_weights_1d):
-                r[i, j] = first_input_k[i] * first_input_k[j]
-
-        mu_k = mu_0 / ((first_input_k ** 2).sum() + epsilon)
+        mu_k = mu_0 / ((first_input_k_vec_transp ** 2).sum() + epsilon)
         # mu_k = mu_0 / (3 * np.trace(r))
         # mu_k = mu_0 / (3 * np.trace(r) + epsilon)
 
-        grad_J = -2 * (p - r.dot(weights_1d))
+        grad_J = -2 * (P_k - R_k.dot(h_k))
         # print(mu_0 / (3 * np.trace(r)), mu_0 / (3 * np.trace(r) + epsilon), mu_0 / ((first_input_k ** 2).sum() + epsilon), grad_J)
         # print(mu_k, np.trace(r), grad_J)
 
-        # if grad_J == 0:
-        #     print("r.dot(weights_1d) = ", r.max())
+        h_k -= mu_k * grad_J
 
-        weights_1d -= mu_k * grad_J
-
-    return weights_1d
+    return h_k
 
 def RLS(first_input_1d, second_input_1d, number_of_weights_1d, lambd=0.9):
     delta = 1
