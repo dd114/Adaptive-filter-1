@@ -64,7 +64,8 @@ def LMS_1d(first_input_1d, second_input_1d, number_of_weights_1d, mu_0, epsilon)
         R_k = first_input_k_vec.dot(first_input_k_vec_transp)
 
         # mu_k = mu_0 / ((first_input_k_vec_transp ** 2).sum() + epsilon)
-        mu_k = mu_0 / (3 * np.trace(R_k) + epsilon)
+        mu_k = mu_0 / (np.trace(R_k) + epsilon)
+        # mu_k = mu_0 / (3 * np.trace(R_k) + epsilon)
         # mu_k = mu_0 / (3 * np.trace(R_k))
 
         grad_J = -2 * (P_k - R_k.dot(h_k))
