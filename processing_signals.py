@@ -149,7 +149,7 @@ def fitting_of_LMS(first_input, second_input, number_of_weights, mu_0=0.9, epsil
 
     return weights
 
-def fitting_of_RLS(first_input, second_input, number_of_weights, lambd=0.9, delta=1):
+def fitting_of_RLS(first_input, second_input, number_of_weights, lambd=0.99, delta=1):
     assert len(first_input.shape) == len(
         second_input.shape), f'The dimensions of the parameters do not match {len(first_input.shape)} != {len(second_input.shape)}'
 
